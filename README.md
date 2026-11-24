@@ -8,7 +8,7 @@
 |---|---|
 | Ciclo Formativo | Técnico Superior en Administración de Sistemas Informáticos en Red |
 | Centro educativo | IES Triana |
-| Autor | Alejandro Vega |
+| Autor | Alejandro Vega Rodríguez |
 | Curso académico | 2026/2027 |
 
 ---
