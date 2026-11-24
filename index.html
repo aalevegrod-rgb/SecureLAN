@@ -1,11 +1,922 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>SecureLAN</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SecureLAN: diseño e implantación de una red empresarial segura mediante VLAN, firewall, control de acceso y monitorización.">
+    <meta name="theme-color" content="#080d16">
+    <title>SecureLAN | Infraestructura de Red Segura</title>
+
+    <style>
+        :root {
+            --bg: #080d16;
+            --panel: #101a29;
+            --panel2: #142235;
+            --green: #35e6a1;
+            --blue: #42a5f5;
+            --text: #e8f0fa;
+            --muted: #91a3b8;
+            --border: #26364a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.7;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(1120px, 90%);
+            margin: auto;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(8, 13, 22, .95);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+        }
+
+        nav {
+            min-height: 75px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--green);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .nav-links a:hover {
+            color: var(--green);
+        }
+
+        .hero {
+            padding: 105px 0 85px;
+            background:
+                radial-gradient(circle at 80% 25%, #123b3540, transparent 35%),
+                radial-gradient(circle at 15% 80%, #16436a30, transparent 35%);
+        }
+
+        .tag {
+            display: inline-block;
+            color: var(--green);
+            background: #35e6a115;
+            border: 1px solid #35e6a150;
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-size: 12px;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+        }
+
+        .hero h1 {
+            font-size: clamp(42px, 7vw, 76px);
+            line-height: 1.1;
+            margin-bottom: 22px;
+        }
+
+        .hero h1 span {
+            color: var(--green);
+        }
+
+        .hero p {
+            max-width: 720px;
+            color: var(--muted);
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 22px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        .btn-primary {
+            background: var(--green);
+            color: #07150f;
+        }
+
+        .btn-primary:hover {
+            background: #6af5bd;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--green);
+        }
+
+        .terminal {
+            margin-top: 55px;
+            max-width: 760px;
+            background: #050a10;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px #0006;
+        }
+
+        .terminal-head {
+            background: #131e2d;
+            padding: 12px 17px;
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #e65b5b;
+        }
+
+        .dot:nth-child(2) { background: #e9bd55; }
+        .dot:nth-child(3) { background: var(--green); }
+
+        .terminal-body {
+            padding: 22px;
+            font-family: monospace;
+            font-size: 13px;
+            line-height: 2;
+        }
+
+        .terminal-body .green { color: var(--green); }
+        .terminal-body .blue { color: var(--blue); }
+        .terminal-body .muted { color: var(--muted); }
+
+        section {
+            padding: 85px 0;
+            border-top: 1px solid #26364a70;
+        }
+
+        .section-title {
+            margin-bottom: 40px;
+        }
+
+        .section-title small {
+            color: var(--green);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .section-title h2 {
+            font-size: 34px;
+            margin: 8px 0;
+        }
+
+        .section-title p {
+            color: var(--muted);
+            max-width: 700px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 24px;
+            transition: .2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: #35e6a180;
+        }
+
+        .card-icon {
+            font-size: 27px;
+            margin-bottom: 12px;
+        }
+
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .architecture {
+            background: #0b1320;
+        }
+
+        .architecture-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            text-align: center;
+        }
+
+        .architecture-item {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px 12px;
+        }
+
+        .architecture-item strong {
+            display: block;
+            color: var(--green);
+            margin-bottom: 6px;
+        }
+
+        .architecture-item small {
+            color: var(--muted);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: #142235;
+            color: var(--green);
+        }
+
+        td {
+            color: var(--muted);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            display: inline-block;
+            color: var(--green);
+            background: #35e6a115;
+            border-radius: 4px;
+            padding: 3px 8px;
+            font-size: 11px;
+        }
+
+        .security-rule {
+            border-left: 3px solid var(--green);
+            background: var(--panel);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 0 7px 7px 0;
+        }
+
+        .security-rule h3 {
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .security-rule p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .phases {
+            border-left: 2px solid var(--green);
+            margin-left: 10px;
+            padding-left: 28px;
+        }
+
+        .phase {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .phase::before {
+            content: "";
+            position: absolute;
+            left: -36px;
+            top: 8px;
+            width: 13px;
+            height: 13px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 12px #35e6a180;
+        }
+
+        .phase small {
+            color: var(--green);
+        }
+
+        .phase p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .status {
+            color: var(--green);
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        .status::before {
+            content: "● ";
+        }
+
+        footer {
+            padding: 35px 0;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 13px;
+            text-align: center;
+        }
+
+        footer span {
+            color: var(--green);
+        }
+
+        @media (max-width: 750px) {
+            .nav-links {
+                gap: 12px;
+                font-size: 11px;
+            }
+
+            .hero {
+                padding: 75px 0 60px;
+            }
+
+            section {
+                padding: 60px 0;
+            }
+
+            .section-title h2 {
+                font-size: 27px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            nav {
+                flex-direction: column;
+                padding: 15px 0;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <h1>SecureLAN</h1>
-  <p>Anteproyecto de ASIR.</p>
+
+<header>
+    <nav class="container">
+        <a href="#inicio" class="logo">SECURE<span>LAN</span></a>
+
+        <ul class="nav-links">
+            <li><a href="#proyecto">Proyecto</a></li>
+            <li><a href="#tecnologias">Tecnologías</a></li>
+            <li><a href="#red">Red</a></li>
+            <li><a href="#seguridad">Seguridad</a></li>
+            <li><a href="#desarrollo">Desarrollo</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+
+    <section class="hero" id="inicio">
+        <div class="container">
+
+            <span class="tag">NETWORK SECURITY / ASIR 2026-2027</span>
+
+            <h1>SECURE<span>LAN</span></h1>
+
+            <h2>Diseño e implantación de una red empresarial segura</h2>
+
+            <p>
+                Infraestructura de red diseñada para una pequeña empresa de
+                aproximadamente 50 trabajadores. Segmentación mediante VLAN,
+                protección perimetral, control de accesos y monitorización
+                centralizada de eventos de seguridad.
+            </p>
+
+            <div class="buttons">
+                <a href="#proyecto" class="btn btn-primary">Explorar proyecto</a>
+                <a href="#red" class="btn btn-secondary">Ver arquitectura</a>
+            </div>
+
+            <div class="terminal">
+                <div class="terminal-head">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span style="margin-left:10px">securelan@network:~</span>
+                </div>
+
+                <div class="terminal-body">
+                    <div><span class="green">root@securelan</span>:~# systemctl status network</div>
+                    <div class="green">● Infraestructura de red preparada</div>
+                    <div><span class="blue">[INFO]</span> Segmentación VLAN: configurada en el diseño</div>
+                    <div><span class="blue">[INFO]</span> Firewall: OPNsense</div>
+                    <div><span class="blue">[INFO]</span> Control de acceso: Samba</div>
+                    <div><span class="blue">[INFO]</span> Monitorización: Grafana + Loki</div>
+                    <div><span class="muted">[SECURELAN] Proyecto en fase de desarrollo...</span></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="proyecto">
+        <div class="container">
+
+            <div class="section-title">
+                <small>01 / Acerca del proyecto</small>
+                <h2>¿Qué es SecureLAN?</h2>
+                <p>
+                    SecureLAN busca diseñar e implantar una infraestructura
+                    informática segura, organizada y monitorizada para una
+                    pequeña empresa.
+                </p>
+            </div>
+
+            <div class="grid">
+
+                <article class="card">
+                    <div class="card-icon">🛡️</div>
+                    <h3>Protección de red</h3>
+                    <p>
+                        Firewall con reglas específicas para controlar el tráfico
+                        y bloquear conexiones no autorizadas.
+                    </p>
+                </article>
+
+                <article class="card">
+                    <div class="card-icon">🔀</div>
+                    <h3>Segmentación VLAN</h3>
+                    <p>
+                        Separación de departamentos para limitar las comunicaciones
+                        y evitar accesos innecesarios.
+                    </p>
+                </article>
+
+                <article class="card">
+                    <div class="card-icon">🔐</div>
+                    <h3>Control de acceso</h3>
+                    <p>
+                        Usuarios, grupos y permisos mediante Samba para proteger
+                        los recursos compartidos.
+                    </p>
+                </article>
+
+                <article class="card">
+                    <div class="card-icon">📊</div>
+                    <h3>Monitorización</h3>
+                    <p>
+                        Centralización de registros y estadísticas para visualizar
+                        el estado de la infraestructura.
+                    </p>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="tecnologias">
+        <div class="container">
+
+            <div class="section-title">
+                <small>02 / Stack tecnológico</small>
+                <h2>Tecnologías utilizadas</h2>
+                <p>
+                    Herramientas de software libre y soluciones de administración
+                    de sistemas para construir y supervisar la infraestructura.
+                </p>
+            </div>
+
+            <div class="grid">
+
+                <article class="card">
+                    <h3>OPNsense</h3>
+                    <p>
+                        Firewall, router, servidor DHCP y DNS, segmentación
+                        de VLAN y gestión de reglas de seguridad.
+                    </p>
+                </article>
+
+                <article class="card">
+                    <h3>Samba</h3>
+                    <p>
+                        Gestión centralizada de usuarios, grupos, dominio
+                        y carpetas compartidas con permisos.
+                    </p>
+                </article>
+
+                <article class="card">
+                    <h3>Grafana</h3>
+                    <p>
+                        Paneles visuales para consultar el estado de la red,
+                        estadísticas y eventos de seguridad.
+                    </p>
+                </article>
+
+                <article class="card">
+                    <h3>Loki + Alloy</h3>
+                    <p>
+                        Recogida, envío y almacenamiento de registros
+                        para su posterior consulta.
+                    </p>
+                </article>
+
+                <article class="card">
+                    <h3>Prometheus</h3>
+                    <p>
+                        Recogida y almacenamiento de métricas para
+                        analizar el rendimiento de los sistemas.
+                    </p>
+                </article>
+
+                <article class="card">
+                    <h3>Docker Compose</h3>
+                    <p>
+                        Despliegue y administración de los servicios
+                        de monitorización mediante contenedores.
+                    </p>
+                </article>
+
+                <article class="card">
+                    <h3>VirtualBox</h3>
+                    <p>
+                        Creación de máquinas virtuales para desplegar
+                        y probar la infraestructura.
+                    </p>
+                </article>
+
+                <article class="card">
+                    <h3>Wireshark / Nmap</h3>
+                    <p>
+                        Análisis de paquetes, comprobación de puertos
+                        y verificación de la seguridad de la red.
+                    </p>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="architecture" id="red">
+        <div class="container">
+
+            <div class="section-title">
+                <small>03 / Arquitectura de red</small>
+                <h2>Infraestructura segmentada</h2>
+                <p>
+                    La red se organiza en diferentes VLAN según los departamentos
+                    y funciones de cada dispositivo.
+                </p>
+            </div>
+
+            <div class="architecture-box">
+                <div class="architecture-item">
+                    <strong>OPNsense</strong>
+                    <small>Router / Firewall / DHCP / DNS</small>
+                </div>
+
+                <div class="architecture-item">
+                    <strong>VLAN 10 - 40</strong>
+                    <small>Departamentos de la empresa</small>
+                </div>
+
+                <div class="architecture-item">
+                    <strong>VLAN 50</strong>
+                    <small>Servidores empresariales</small>
+                </div>
+
+                <div class="architecture-item">
+                    <strong>VLAN 60</strong>
+                    <small>Red aislada de invitados</small>
+                </div>
+
+                <div class="architecture-item">
+                    <strong>VLAN 99</strong>
+                    <small>Administración y gestión</small>
+                </div>
+            </div>
+
+            <h3 style="margin:45px 0 20px">Plan de direccionamiento IP</h3>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>VLAN</th>
+                            <th>Departamento</th>
+                            <th>Subred</th>
+                            <th>Gateway</th>
+                            <th>DHCP</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>10</td>
+                            <td>Dirección</td>
+                            <td>192.168.10.0/24</td>
+                            <td>192.168.10.1</td>
+                            <td>100 - 150</td>
+                        </tr>
+
+                        <tr>
+                            <td>20</td>
+                            <td>Administración</td>
+                            <td>192.168.20.0/24</td>
+                            <td>192.168.20.1</td>
+                            <td>100 - 200</td>
+                        </tr>
+
+                        <tr>
+                            <td>30</td>
+                            <td>Comercial</td>
+                            <td>192.168.30.0/24</td>
+                            <td>192.168.30.1</td>
+                            <td>100 - 200</td>
+                        </tr>
+
+                        <tr>
+                            <td>40</td>
+                            <td>Informática</td>
+                            <td>192.168.40.0/24</td>
+                            <td>192.168.40.1</td>
+                            <td>100 - 150</td>
+                        </tr>
+
+                        <tr>
+                            <td>50</td>
+                            <td>Servidores</td>
+                            <td>192.168.50.0/24</td>
+                            <td>192.168.50.1</td>
+                            <td>Desactivado</td>
+                        </tr>
+
+                        <tr>
+                            <td>60</td>
+                            <td>Invitados</td>
+                            <td>192.168.60.0/24</td>
+                            <td>192.168.60.1</td>
+                            <td>50 - 250</td>
+                        </tr>
+
+                        <tr>
+                            <td>99</td>
+                            <td>Gestión</td>
+                            <td>192.168.99.0/24</td>
+                            <td>192.168.99.1</td>
+                            <td>Desactivado</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="seguridad">
+        <div class="container">
+
+            <div class="section-title">
+                <small>04 / Política de seguridad</small>
+                <h2>Seguridad por defecto</h2>
+                <p>
+                    La infraestructura seguirá el principio de mínimo privilegio:
+                    bloquear todo el tráfico entre VLAN salvo las comunicaciones
+                    expresamente autorizadas.
+                </p>
+            </div>
+
+            <div class="security-rule">
+                <h3>VLAN 99 y VLAN 40 · Administración</h3>
+                <p>
+                    Acceso administrativo mediante HTTPS, SSH y visualización
+                    de Grafana hacia OPNsense y los servidores autorizados.
+                </p>
+            </div>
+
+            <div class="security-rule">
+                <h3>VLAN 10, 20 y 30 · Departamentos</h3>
+                <p>
+                    Acceso al DNS, controlador de dominio y carpetas compartidas
+                    según permisos de grupo. Salida a Internet mediante HTTP/HTTPS.
+                    Sin comunicación directa entre departamentos.
+                </p>
+            </div>
+
+            <div class="security-rule">
+                <h3>VLAN 50 · Servidores</h3>
+                <p>
+                    Aloja los servicios empresariales y de monitorización.
+                    Solo responde a peticiones legítimas de redes autorizadas.
+                </p>
+            </div>
+
+            <div class="security-rule">
+                <h3>VLAN 60 · Invitados</h3>
+                <p>
+                    Acceso exclusivo a Internet mediante NAT. Bloqueo hacia
+                    las redes privadas de la empresa.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="desarrollo">
+        <div class="container">
+
+            <div class="section-title">
+                <small>05 / Planificación</small>
+                <h2>Fases de desarrollo</h2>
+                <p>
+                    El proyecto se organizará en seis etapas, desde el diseño
+                    inicial hasta la documentación y entrega.
+                </p>
+            </div>
+
+            <div class="phases">
+
+                <div class="phase">
+                    <small>NOVIEMBRE</small>
+                    <h3>01. Planificación inicial</h3>
+                    <p>
+                        Definición de objetivos, elección de herramientas,
+                        preparación del entorno y entrega del anteproyecto.
+                    </p>
+                </div>
+
+                <div class="phase">
+                    <small>DICIEMBRE - ENERO</small>
+                    <h3>02. Análisis y diseño</h3>
+                    <p>
+                        Diseño de VLAN, direccionamiento IP, esquema de red,
+                        reglas de firewall y prototipos en Figma.
+                    </p>
+                </div>
+
+                <div class="phase">
+                    <small>FEBRERO - ABRIL</small>
+                    <h3>03. Desarrollo e implementación</h3>
+                    <p>
+                        Instalación de OPNsense, configuración de servicios
+                        de red, Samba y plataforma de monitorización.
+                    </p>
+                </div>
+
+                <div class="phase">
+                    <small>ABRIL - MAYO</small>
+                    <h3>04. Pruebas y validación</h3>
+                    <p>
+                        Comprobación de reglas, registros, conexiones
+                        y funcionamiento de las alertas.
+                    </p>
+                </div>
+
+                <div class="phase">
+                    <small>MAYO</small>
+                    <h3>05. Despliegue y puesta en marcha</h3>
+                    <p>
+                        Preparación de la infraestructura y copias de
+                        seguridad de las configuraciones.
+                    </p>
+                </div>
+
+                <div class="phase">
+                    <small>MAYO - JUNIO</small>
+                    <h3>06. Mantenimiento y documentación</h3>
+                    <p>
+                        Finalización de la memoria, preparación de la
+                        presentación y demostración del proyecto.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="autor">
+        <div class="container">
+
+            <div class="section-title">
+                <small>06 / Información académica</small>
+                <h2>Proyecto Intermodular ASIR</h2>
+                <p>
+                    Proyecto final del Ciclo Formativo de Grado Superior
+                    de Administración de Sistemas Informáticos en Red.
+                </p>
+            </div>
+
+            <div class="grid">
+                <article class="card">
+                    <h3>Autor</h3>
+                    <p>Alejandro Vega</p>
+                </article>
+
+                <article class="card">
+                    <h3>Centro educativo</h3>
+                    <p>IES Triana · Sevilla</p>
+                </article>
+
+                <article class="card">
+                    <h3>Curso académico</h3>
+                    <p>2026 / 2027</p>
+                </article>
+
+                <article class="card">
+                    <h3>Especialidad</h3>
+                    <p>Administración de Sistemas Informáticos en Red</p>
+                </article>
+            </div>
+
+            <p class="status">SecureLAN · Proyecto en fase de desarrollo</p>
+
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <div class="container">
+        <p><span>SECURELAN</span> · Proyecto Intermodular ASIR · 2026/2027</p>
+        <p>Diseño e implantación de una red empresarial segura.</p>
+    </div>
+</footer>
+
 </body>
 </html>
