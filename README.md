@@ -1,5 +1,5 @@
 
-# 🔐 SECURELAN
+# SECURELAN
 ## Diseño e implantación de una red empresarial segura
 
 **Anteproyecto – Proyecto Intermodular de Administración de Sistemas Informáticos en Red**
